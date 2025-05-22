@@ -185,7 +185,7 @@ CREATE TABLE Emprestimo (
     matricula_usuario INTEGER NOT NULL,
     data_devolução CHAR(80) NOT NULL,
     PRIMARY KEY (codigo),
-    FOREIGN KEY (matricula_usuario) REFERENCES Usuario(matricula)
+    FOREIGN KEY (matricula) REFERENCES Usuario(matricula)
 );
 
 INSERT INTO Emprestimo (codigo, data_hora, matricula_usuario, data_devolução)
@@ -201,7 +201,7 @@ CREATE TABLE Livro (
     autor CHAR(50) NOT NULL,
     codigo_sessao CHAR(80) NOT NULL,
     PRIMARY KEY (codigo),
-    FOREIGN KEY (codigo_sessao) REFERENCES Sessao(codigo)
+    FOREIGN KEY (codigo) REFERENCES Sessao(codigo)
 );
 
 INSERT INTO Livro (codigo, titulo, autor, codigo_sessao)
