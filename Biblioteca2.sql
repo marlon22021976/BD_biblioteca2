@@ -224,7 +224,120 @@ VALUES
 ('658T', 'NN56'),
 ('254A', 'NM77');
 
-	
+1. Inserir 5 registros em cada tabela
+
+-- Inserir usuários
+INSERT INTO Usuario (matricula, nome, email, endereco, telefone) VALUES
+(1234, 'Pedro Bacelar', 'pedro@exemplo.com', 'Rua A', '1234-5678'),
+(5678, 'Ana Souza', 'ana@exemplo.com', 'Rua B', '2345-6789'),
+(9101, 'Carlos Silva', 'carlos@exemplo.com', 'Rua C', '3456-7890'),
+(1121, 'Maria Oliveira', 'maria@exemplo.com', 'Rua D', '4567-8901'),
+(3141, 'João Pereira', 'joao@exemplo.com', 'Rua E', '5678-9012');
+
+-- Inserir sessões
+INSERT INTO Sessao (codigo, descricao, localizacao) VALUES
+('S001', 'Ficção', 'Bloco A'),
+('S002', 'Tecnologia', 'Bloco B'),
+('S003', 'História', 'Bloco C'),
+('S004', 'Ciência', 'Bloco D'),
+('S005', 'Arte', 'Bloco E');
+
+-- Inserir livros
+INSERT INTO Livro (codigo, titulo, autor, codigo_sessao) VALUES
+('L001', 'O Senhor dos Anéis', 'J.R.R. Tolkien', 'S001'),
+('L002', 'Java para Iniciantes', 'Herbert Schildt', 'S002'),
+('L003', 'História do Brasil', 'Boris Fausto', 'S003'),
+('L004', 'Física Moderna', 'David Halliday', 'S004'),
+('L005', 'Pintura no Renascimento', 'Erwin Panofsky', 'S005');
+
+-- Inserir empréstimos
+INSERT INTO Emprestimo (codigo, data_hora, matricula_usuario, data_devolucao) VALUES
+('E001', '2025-05-01 10:00', 1234, '2025-05-15'),
+('E002', '2025-05-02 11:00', 5678, '2025-05-16'),
+('E003', '2025-05-03 12:00', 9101, '2025-05-17'),
+('E004', '2025-05-04 13:00', 1121, '2025-05-18'),
+('E005', '2025-05-05 14:00', 3141, '2025-05-19');
+
+-- Inserir registros de empréstimos de livros
+INSERT INTO Livro_emprestimo (codigo_livro, codigo_emprestimo) VALUES
+('L001', 'E001'),
+('L002', 'E002'),
+('L003', 'E003'),
+('L004', 'E004'),
+('L005', 'E005');
+
+2. Informar o nome de todos os usuários do Sistema Biblioteca
+
+SELECT nome FROM Usuario;
+
+3. Informar a(s) data e horário(s) que o usuário 'Pedro Bacelar' emprestou livros
+
+SELECT E.data_hora
+FROM Emprestimo E
+JOIN Usuario U ON E.matricula_usuario = U.matricula
+WHERE U.nome = 'Pedro Bacelar';
+
+4. Informar o nome de todos os livros que estão emprestados
+
+SELECT L.titulo
+FROM Livro L
+JOIN Livro_emprestimo LE ON L.codigo = LE.codigo_livro
+JOIN Emprestimo E ON LE.codigo_emprestimo = E.codigo
+WHERE E.data_devolucao > CURRENT_DATE;
+
+5. Informar o número de livros de cada sessão
+
+SELECT S.descricao, COUNT(L.codigo) AS num_livros
+FROM Sessao S
+LEFT JOIN Livro L ON S.codigo = L.codigo_sessao
+GROUP BY S.descricao;
+
+6. Excluir os empréstimos do aluno chamado 'Pedro Bacelar'
+
+DELETE FROM Emprestimo
+WHERE matricula_usuario = (SELECT matricula FROM Usuario WHERE nome = 'Pedro Bacelar');
+
+7. Excluir todos os livros emprestados na data de 22/05/2025
+
+DELETE FROM Livro_emprestimo
+WHERE codigo_emprestimo IN (
+    SELECT E.codigo
+    FROM Emprestimo E
+    WHERE E.data_hora = '2025-05-22'
+);
+
+8. Atualizar a data de devolução do livro emprestado no dia 10/05/2025 para o dia 25/05/2025
+
+UPDATE Emprestimo
+SET data_devolucao = '2025-05-25'
+WHERE data_hora = '2025-05-10';
+
+9. Informar todos os dados dos livros de 'Banco de Dados', 'Algoritmos' e 'Estrutura de Dados'
+Usando IN:
+SELECT *
+FROM Livro
+WHERE titulo IN ('Banco de Dados', 'Algoritmos', 'Estrutura de Dados');
+Usando WHERE com LIKE:
+SELECT *
+FROM Livro
+WHERE titulo LIKE '%Banco de Dados%'
+   OR titulo LIKE '%Algoritmos%'
+   OR titulo LIKE '%Estrutura de Dados%';
+
+10. Mostrar o nome dos usuários que retiraram livros emprestados entre as datas de 01/04/2025 a 31/04/2025
+
+SELECT U.nome
+FROM Usuario U
+JOIN Emprestimo E ON U.matricula = E.matricula_usuario
+WHERE E.data_hora BETWEEN '2025-04-01' AND '2025-04-30';
+
+11. Informar o nome dos autores dos livros que tenham no título a palavra 'Python', não importando se é no início ou final do título
+
+SELECT DISTINCT L.autor
+FROM Livro L
+WHERE L.titulo LIKE '%Python%';
+
+
 
 
 	
