@@ -336,6 +336,85 @@ WHERE E.data_hora BETWEEN '2025-04-01' AND '2025-04-30';
 SELECT DISTINCT L.autor
 FROM Livro L
 WHERE L.titulo LIKE '%Python%';
+///////////////////////////////////////////////////////////////////////////////////////////
+BANCO DE DADOS CORRIGIDO
+
+-- Criação das tabelas (ajustada)
+DROP TABLE IF EXISTS Livro_emprestimo, Emprestimo, Livro, Sessao, Usuario;
+
+CREATE TABLE Usuario (
+    matricula INT PRIMARY KEY,
+    nome VARCHAR(100),
+    email VARCHAR(100),
+    endereco VARCHAR(100),
+    telefone VARCHAR(20)
+);
+
+CREATE TABLE Sessao (
+    codigo VARCHAR(10) PRIMARY KEY,
+    descricao VARCHAR(100),
+    localizacao VARCHAR(100)
+);
+
+CREATE TABLE Livro (
+    codigo VARCHAR(10) PRIMARY KEY,
+    titulo VARCHAR(100),
+    autor VARCHAR(100),
+    codigosessao VARCHAR(10),
+    FOREIGN KEY (codigosessao) REFERENCES Sessao(codigo)
+);
+
+CREATE TABLE Emprestimo (
+    codigo VARCHAR(10) PRIMARY KEY,
+    data_hora TIMESTAMP,
+    matricula_usuario INT,
+    data_devolucao DATE,
+    FOREIGN KEY (matricula_usuario) REFERENCES Usuario(matricula)
+);
+
+CREATE TABLE Livro_emprestimo (
+    codigo_livro VARCHAR(10),
+    codigo_emprestimo VARCHAR(10),
+    PRIMARY KEY (codigo_livro, codigo_emprestimo),
+    FOREIGN KEY (codigo_livro) REFERENCES Livro(codigo),
+    FOREIGN KEY (codigo_emprestimo) REFERENCES Emprestimo(codigo)
+);
+
+-- Inserções
+INSERT INTO Usuario (matricula, nome, email, endereco, telefone) VALUES
+(1234, 'Pedro Bacelar', 'pedro@exemplo.com', 'Rua A', '1234-5678'),
+(5678, 'Ana Souza', 'ana@exemplo.com', 'Rua B', '2345-6789'),
+(9101, 'Carlos Silva', 'carlos@exemplo.com', 'Rua C', '3456-7890'),
+(1121, 'Maria Oliveira', 'maria@exemplo.com', 'Rua D', '4567-8901'),
+(3141, 'João Pereira', 'joao@exemplo.com', 'Rua E', '5678-9012');
+
+INSERT INTO Sessao (codigo, descricao, localizacao) VALUES
+('S001', 'Ficção', 'Bloco A'),
+('S002', 'Tecnologia', 'Bloco B'),
+('S003', 'História', 'Bloco C'),
+('S004', 'Ciência', 'Bloco D'),
+('S005', 'Arte', 'Bloco E');
+
+INSERT INTO Livro (codigo, titulo, autor, codigosessao) VALUES
+('L001', 'O Senhor dos Anéis', 'J.R.R. Tolkien', 'S001'),
+('L002', 'Java para Iniciantes', 'Herbert Schildt', 'S002'),
+('L003', 'História do Brasil', 'Boris Fausto', 'S003'),
+('L004', 'Física Moderna', 'David Halliday', 'S004'),
+('L005', 'Pintura no Renascimento', 'Erwin Panofsky', 'S005');
+
+INSERT INTO Emprestimo (codigo, data_hora, matricula_usuario, data_devolucao) VALUES
+('E001', '2025-05-01 10:00', 1234, '2025-05-15'),
+('E002', '2025-05-02 11:00', 5678, '2025-05-16'),
+('E003', '2025-05-03 12:00', 9101, '2025-05-17'),
+('E004', '2025-05-04 13:00', 1121, '2025-05-18'),
+('E005', '2025-05-05 14:00', 3141, '2025-05-19');
+
+INSERT INTO Livro_emprestimo (codigo_livro, codigo_emprestimo) VALUES
+('L001', 'E001'),
+('L002', 'E002'),
+('L003', 'E003'),
+('L004', 'E004'),
+('L005', 'E005');
 
 
 
